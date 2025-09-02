@@ -14,6 +14,7 @@ import java.util.Set;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "MESSAGE_BOARD")
 public class MessageBoard {
 
     @Id
@@ -27,7 +28,7 @@ public class MessageBoard {
     @Column(name = "message_board_name")
     private String message_board_name;
 
-    @OneToMany(mappedBy = "message_board", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "messageBoard", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Message> messages = new HashSet<>();
 
     @ManyToMany

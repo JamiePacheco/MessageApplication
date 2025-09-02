@@ -1,11 +1,11 @@
 package com.socket_testing.socket.service;
 
-import com.socket_testing.socket.model.Message;
 import com.socket_testing.socket.model.MessageBoard;
-import com.socket_testing.socket.model.User;
 import com.socket_testing.socket.repository.MessageBoardRepository;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,11 +21,17 @@ public class MessageBoardService {
         return messageBoardRepository.getMessageBoardById(id);
     }
 
-    public List<MessageBoard> getMessageBoards(int pageSize, int )
+    public List<MessageBoard> getMessageBoards(int pageSize, int pageNum, String query) {
+        PageRequest pageRequest = PageRequest.of(pageNum, pageSize);
+        Page<MessageBoard> messageBoards = messageBoardRepository.getMessageBoardsByQuery(query, pageRequest);
 
-    public void saveMessageBoard(MessageBoard messageBoard) {
-        messageBoardRepository.save(messageBoard);
-        return;
+        return messageBoards.stream().toList();
+    }
+
+    public MessageBoard saveMessageBoard(MessageBoard messageBoard) {
+        messageBoard.getUsers().add(messageBoard.getAuthor());
+        MessageBoard savedMessageBoard = messageBoardRepository.save(messageBoard);
+        return savedMessageBoard;
     }
 
     public MessageBoard updateMessageBoard(MessageBoard messageBoard) {

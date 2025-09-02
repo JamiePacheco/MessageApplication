@@ -21,13 +21,11 @@ public class Message {
     private Long id;
 
     @NonNull
-    @Column(name = "author")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User author;
 
     @NonNull
-    @Column(name = "author")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "message_board_id")
     private MessageBoard messageBoard;
@@ -38,7 +36,7 @@ public class Message {
 
     @Nullable
     @Column(name = "image")
-    private Byte[] image;
+    private byte[] image;
 
     @NonNull
     @Column(name = "timestamp")

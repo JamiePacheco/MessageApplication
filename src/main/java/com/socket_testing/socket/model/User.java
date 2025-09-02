@@ -1,20 +1,23 @@
 package com.socket_testing.socket.model;
 
+import com.socket_testing.socket.model.enums.Roles;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.io.Serializable;
+import java.util.*;
 
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "USER")
-public class User {
+@Table(name = "_USER")
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -34,13 +37,23 @@ public class User {
     private byte[] profilePicture;
 
     @Column(name = "owned_message_boards")
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<MessageBoard> ownedMessageBoards = new HashSet<>();
 
-    @ManyToMany(mappedBy = "boards")
+    @ManyToMany(mappedBy = "users")
     private Set<MessageBoard> messageBoards = new HashSet<>();
 
     @Column(name = "messages")
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Message> messages = new HashSet<>();
+
+    @Column(name = "role")
+    @Enumerated(EnumType.STRING)
+    private Roles role;
+
+    //TODO finish implementing custom roles (or remove them idk)
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return Collections.singleton(() -> role.name());
+    }
 }
