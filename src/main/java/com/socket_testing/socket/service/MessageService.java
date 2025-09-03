@@ -53,9 +53,8 @@ public class MessageService {
         return page.stream().toList();
     }
 
-    public void saveMessage(Message message) {
-        messageRepository.save(message);
-        return;
+    public Message saveMessage(Message message) {
+        return messageRepository.save(message);
     }
 }
 
