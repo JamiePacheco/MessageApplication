@@ -1,6 +1,7 @@
 package com.socket_testing.socket.service;
 
 import com.socket_testing.socket.model.User;
+import com.socket_testing.socket.model.enums.Roles;
 import com.socket_testing.socket.repository.UserRepository;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -45,6 +46,8 @@ public class UserService implements UserDetailsService {
     }
 
     public User createNewUser(User user) {
+        //default user role
+        user.setRole(Roles.ROLE_USER);
         User newUser = userRepository.save(user);
         return newUser;
     }

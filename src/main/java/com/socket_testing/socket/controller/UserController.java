@@ -44,30 +44,6 @@ public class UserController {
         }
     }
 
-    @PostMapping()
-    public ResponseEntity<Response<User>> createNewUser(@RequestBody User user) {
-        try {
-            User newUser = userService.createNewUser(user);
-            return ResponseEntity.ok(
-                    Response.<User>builder()
-                            .message("Successfully created new user")
-                            .responseContent(newUser)
-                            .status(HttpStatus.ACCEPTED)
-                            .build()
-            );
-        } catch (Exception ex) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(
-                            Response.<User>builder()
-                                    .message(ex.getMessage())
-                                    .responseContent(null)
-                                    .status(HttpStatus.CONFLICT)
-                                    .build()
-                    );
-        }
-    }
-
     @PutMapping
     public ResponseEntity<Response<User>> updateUser(@RequestBody User user) {
         try {

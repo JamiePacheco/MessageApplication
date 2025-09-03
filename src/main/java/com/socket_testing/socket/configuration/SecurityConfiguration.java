@@ -31,8 +31,8 @@ public class SecurityConfiguration {
         http.csrf(crsf -> crsf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
-                        .anyRequest()
-                        .authenticated()
+                        .requestMatchers("/ws/**").permitAll() // will handle JWT authorization manually
+                        .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 

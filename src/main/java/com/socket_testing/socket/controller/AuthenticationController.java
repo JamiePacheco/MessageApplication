@@ -1,6 +1,7 @@
 package com.socket_testing.socket.controller;
 
 import com.socket_testing.socket.model.Response;
+import com.socket_testing.socket.model.User;
 import com.socket_testing.socket.service.UserService;
 import com.socket_testing.socket.utility.JwtUtil;
 import lombok.NonNull;
@@ -24,6 +25,31 @@ public class AuthenticationController {
     private final JwtUtil jwtUtil;
     @NonNull
     private final UserService userService;
+
+    @PostMapping()
+    public ResponseEntity<Response<User>> createNewUser(@RequestBody User user) {
+        try {
+            User newUser = userService.createNewUser(user);
+
+            return ResponseEntity.ok(
+                    Response.<User>builder()
+                            .message("Successfully created new user")
+                            .responseContent(newUser)
+                            .status(HttpStatus.ACCEPTED)
+                            .build()
+            );
+        } catch (Exception ex) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(
+                            Response.<User>builder()
+                                    .message(ex.getMessage())
+                                    .responseContent(null)
+                                    .status(HttpStatus.CONFLICT)
+                                    .build()
+                    );
+        }
+    }
 
     @PostMapping("")
     public ResponseEntity<Response<String>> login(@RequestParam("username") String username, @RequestParam("password") String password) {
