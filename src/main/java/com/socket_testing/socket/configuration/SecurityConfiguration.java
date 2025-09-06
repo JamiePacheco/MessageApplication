@@ -30,7 +30,14 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(crsf -> crsf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers(
+                                "/api/v1/auth/**",
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**",
+                                "/swagger-resources/**",
+                                "/swagger-ui.html",
+                                "/webjars/**"
+                        ).permitAll()
                         .requestMatchers("/ws/**").permitAll() // will handle JWT authorization manually
                         .anyRequest().authenticated()
                 )
@@ -40,7 +47,7 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    public AuthenticationProvider authenticationProvider(AuthenticationProvider authenticationProvider) {
+    public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider(userDetailsService);
         authProvider.setPasswordEncoder(passwordEncoder());
         return authProvider;

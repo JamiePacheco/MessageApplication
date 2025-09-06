@@ -67,32 +67,4 @@ public class UserController {
                     );
         }
     }
-
-    @GetMapping("/authenticate")
-    public ResponseEntity<Response<User>> authenticateUser(@RequestParam("username") String username, @RequestParam("password") String password) {
-        try {
-            User user = userService.authenticateUser(username, password);
-            return ResponseEntity.ok(
-                    Response.<User>builder()
-                            .message("Successfully authenticated user")
-                            .responseContent(user)
-                            .status(HttpStatus.ACCEPTED)
-                            .build()
-            );
-        } catch (Exception ex) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(
-                            Response.<User>builder()
-                                    .message(ex.getMessage())
-                                    .responseContent(null)
-                                    .status(HttpStatus.CONFLICT)
-                                    .build()
-                    );
-        }
-    }
-
-
-
-
 }

@@ -2,10 +2,13 @@ package com.socket_testing.socket.controller;
 
 import com.socket_testing.socket.model.Response;
 import com.socket_testing.socket.model.User;
+import com.socket_testing.socket.service.AuthenticationService;
 import com.socket_testing.socket.service.UserService;
 import com.socket_testing.socket.utility.JwtUtil;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,12 +27,20 @@ public class AuthenticationController {
     @NonNull
     private final JwtUtil jwtUtil;
     @NonNull
+    private final AuthenticationService authenticationService;
+
+    @NonNull
     private final UserService userService;
+
+    private Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
 
     @PostMapping()
     public ResponseEntity<Response<User>> createNewUser(@RequestBody User user) {
+
+        logger.info("Accessed create user endpoint");
+
         try {
-            User newUser = userService.createNewUser(user);
+            User newUser = authenticationService.createNewUser(user);
 
             return ResponseEntity.ok(
                     Response.<User>builder()
@@ -51,7 +62,7 @@ public class AuthenticationController {
         }
     }
 
-    @PostMapping("")
+    @GetMapping()
     public ResponseEntity<Response<String>> login(@RequestParam("username") String username, @RequestParam("password") String password) {
         try {
             Authentication authentication = authenticationManager.authenticate(

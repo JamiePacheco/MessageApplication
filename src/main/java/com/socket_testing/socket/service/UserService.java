@@ -10,6 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,6 +22,7 @@ public class UserService implements UserDetailsService {
     @NonNull
     private UserRepository userRepository;
 
+
     public User getUser(String username) {
         return userRepository.findUserByUsername(username);
     }
@@ -29,27 +31,6 @@ public class UserService implements UserDetailsService {
         PageRequest pageRequest = PageRequest.of(pageNum, pageSize);
         Page page = userRepository.findAll(pageRequest);
         return page.get().toList();
-    }
-
-    public User authenticateUser(String username, String password) {
-        User user = getUser(username);
-
-        if (user == null) {
-            throw new RuntimeException("Username does not exist");
-        }
-
-        if (user.getPassword().equals(password)) {
-            return user;
-        } else {
-            throw new RuntimeException("Incorrect Password");
-        }
-    }
-
-    public User createNewUser(User user) {
-        //default user role
-        user.setRole(Roles.ROLE_USER);
-        User newUser = userRepository.save(user);
-        return newUser;
     }
 
     public User updateUser(User user) {
