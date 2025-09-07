@@ -2,6 +2,7 @@ package com.socket_testing.socket.controller;
 
 import com.socket_testing.socket.model.Response;
 import com.socket_testing.socket.model.User;
+import com.socket_testing.socket.model.dto.UserDTO;
 import com.socket_testing.socket.service.AuthenticationService;
 import com.socket_testing.socket.service.UserService;
 import com.socket_testing.socket.utility.JwtUtil;
@@ -35,17 +36,19 @@ public class AuthenticationController {
     private Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
 
     @PostMapping()
-    public ResponseEntity<Response<User>> createNewUser(@RequestBody User user) {
+    public ResponseEntity<Response<UserDTO>> createNewUser(@RequestBody User user) {
 
         logger.info("Accessed create user endpoint");
 
         try {
             User newUser = authenticationService.createNewUser(user);
+            UserDTO newUserModel = new UserDTO(newUser);
+
 
             return ResponseEntity.ok(
-                    Response.<User>builder()
+                    Response.<UserDTO>builder()
                             .message("Successfully created new user")
-                            .responseContent(newUser)
+                            .responseContent(newUserModel)
                             .status(HttpStatus.ACCEPTED)
                             .build()
             );
@@ -53,7 +56,7 @@ public class AuthenticationController {
             return ResponseEntity
                     .badRequest()
                     .body(
-                            Response.<User>builder()
+                            Response.<UserDTO>builder()
                                     .message(ex.getMessage())
                                     .responseContent(null)
                                     .status(HttpStatus.CONFLICT)

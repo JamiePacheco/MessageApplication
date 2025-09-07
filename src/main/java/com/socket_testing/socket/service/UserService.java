@@ -1,6 +1,7 @@
 package com.socket_testing.socket.service;
 
 import com.socket_testing.socket.model.User;
+import com.socket_testing.socket.model.dto.UserDTO;
 import com.socket_testing.socket.model.enums.Roles;
 import com.socket_testing.socket.repository.UserRepository;
 import lombok.NonNull;
@@ -10,7 +11,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,16 +24,17 @@ public class UserService implements UserDetailsService {
 
 
     public User getUser(String username) {
-        return userRepository.findUserByUsername(username);
+        User user = userRepository.findUserByUsername(username);
+        return user;
     }
 
-    public List<User> getUsers(int pageNum, int pageSize) {
+    public List<UserDTO> getUsers(int pageNum, int pageSize) {
         PageRequest pageRequest = PageRequest.of(pageNum, pageSize);
-        Page page = userRepository.findAll(pageRequest);
-        return page.get().toList();
+        Page<User> page = userRepository.findAll(pageRequest);
+        return page.getContent().stream().map(UserDTO::new).toList();
     }
 
-    public User updateUser(User user) {
+    public UserDTO updateUser(User user) {
         User savedUser = userRepository.findUserByUsername(user.getUsername());
         savedUser.setUsername(user.getUsername());
         savedUser.setPassword(user.getPassword());
@@ -43,7 +44,7 @@ public class UserService implements UserDetailsService {
         savedUser.setOwnedMessageBoards(user.getOwnedMessageBoards());
 
         User updatedUser = userRepository.save(savedUser);
-        return updatedUser;
+        return new UserDTO(updatedUser);
     }
 
     @Override

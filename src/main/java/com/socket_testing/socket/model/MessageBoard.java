@@ -26,7 +26,7 @@ public class MessageBoard {
     private User author;
 
     @Column(name = "message_board_name")
-    private String message_board_name;
+    private String messageBoardName;
 
     @OneToMany(mappedBy = "messageBoard", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Message> messages = new HashSet<>();
