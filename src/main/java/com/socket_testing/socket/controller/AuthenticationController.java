@@ -6,6 +6,8 @@ import com.socket_testing.socket.model.dto.UserDTO;
 import com.socket_testing.socket.service.AuthenticationService;
 import com.socket_testing.socket.service.UserService;
 import com.socket_testing.socket.utility.JwtUtil;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -66,17 +68,26 @@ public class AuthenticationController {
     }
 
     @GetMapping()
-    public ResponseEntity<Response<String>> login(@RequestParam("username") String username, @RequestParam("password") String password) {
+    public ResponseEntity<Response<String>> login(@RequestParam("username") String username, @RequestParam("password") String password, HttpServletResponse response) {
         try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(username, password)
             );
 
             UserDetails userDetails = userService.loadUserByUsername(username);
+            String token = jwtUtil.generateToken(userDetails.getUsername());
+
+            // added jwt as an HTTP only cookie to the response
+            Cookie cookie = new Cookie("jwt", token);
+            cookie.setHttpOnly(true);
+            cookie.setSecure(true);
+            cookie.setPath("/");
+            cookie.setMaxAge(24 * 60 * 60);
+            response.addCookie(cookie);
 
             return ResponseEntity.ok(
                     Response.<String>builder()
-                            .responseContent(jwtUtil.generateToken(userDetails.getUsername()))
+                            .responseContent(null)
                             .message("Successfully Authenticated User")
                             .status(HttpStatus.ACCEPTED)
                             .build()

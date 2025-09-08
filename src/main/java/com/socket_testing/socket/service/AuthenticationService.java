@@ -20,6 +20,12 @@ public class AuthenticationService {
 
 
     public User createNewUser(User user) {
+
+        // check if username exists already
+        if (userRepository.findUserByUsername(user.getUsername()) != null) {
+            throw new RuntimeException("Username unavailable");
+        }
+
         //default user role
         String encodedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(encodedPassword);

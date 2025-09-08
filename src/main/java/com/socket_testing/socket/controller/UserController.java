@@ -5,8 +5,11 @@ import com.socket_testing.socket.model.User;
 import com.socket_testing.socket.model.dto.UserDTO;
 import com.socket_testing.socket.service.UserService;
 import com.socket_testing.socket.utility.JwtUtil;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.aspectj.weaver.patterns.IToken;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
@@ -26,10 +29,11 @@ public class UserController {
     private JwtUtil jwtUtil;
 
     @GetMapping("")
-    public ResponseEntity<Response<UserDTO>> getUser(@RequestHeader(name = "Authorization") String token) {
+    public ResponseEntity<Response<UserDTO>> getUser(HttpServletRequest req) {
             try {
-                String string = jwtUtil.extractUsername(token.substring(7));
-                User user = userService.getUser(string);
+                String token = jwtUtil.extractJwtFromCookie(req);
+                String username = jwtUtil.extractUsername(token);
+                User user = userService.getUser(username);
                 UserDTO userDTO = new UserDTO(user);
                 return ResponseEntity.ok(
                         Response.<UserDTO>builder()
