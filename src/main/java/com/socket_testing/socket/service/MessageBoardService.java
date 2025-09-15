@@ -41,6 +41,9 @@ public class MessageBoardService {
 
         savedMessageBoard.setMessages(messageBoard.getMessages());
         savedMessageBoard.setUsers(messageBoard.getUsers());
+        savedMessageBoard.setMessageBoardBannerImage(messageBoard.getMessageBoardBannerImage());
+        savedMessageBoard.setMessageBoardProfileImage(messageBoard.getMessageBoardProfileImage());
+        savedMessageBoard.setMessageBoardDescription(messageBoard.getMessageBoardDescription());
 
         MessageBoard updatedMessageBoard = messageBoardRepository.save(savedMessageBoard);
         return updatedMessageBoard;

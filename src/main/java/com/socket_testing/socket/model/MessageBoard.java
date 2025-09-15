@@ -28,6 +28,15 @@ public class MessageBoard {
     @Column(name = "message_board_name")
     private String messageBoardName;
 
+    @Column(name = "message_board_description")
+    private String messageBoardDescription;
+
+    @Column(name = "message_board_profile_image")
+    private byte[] messageBoardProfileImage;
+
+    @Column(name = "message_board_banner_image")
+    private byte[] messageBoardBannerImage;
+
     @OneToMany(mappedBy = "messageBoard", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Message> messages = new HashSet<>();
 
